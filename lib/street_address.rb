@@ -867,6 +867,7 @@ module StreetAddress
           s += " " + prefix unless prefix.nil?
           s += " " + street unless street.nil?
           s += " " + street_type unless street_type.nil?
+          s += " " + suffix unless suffix.nil?
           if( !unit_prefix.nil? && !unit.nil? )
             s += " " + unit_prefix
             s += " " + unit

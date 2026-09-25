@@ -200,4 +200,30 @@ class StreetAddressUsTest < Test::Unit::TestCase
 
   end
 
+  def test_to_s_keeps_trailing_directional_suffix
+    {
+      "4621 E Avenue S, Palmdale, CA 93552" => "4621 E Avenue S, Palmdale, CA 93552",
+      "1600 Pennsylvania Ave NW, Washington, DC 20500" => "1600 Pennsylvania Ave NW, Washington, DC 20500",
+      "1005 Gravenstein Hwy N, Sebastopol CA 95472" => "1005 Gravenstein Hwy N, Sebastopol, CA 95472",
+      "2500 W 1700 S, Salt Lake City, UT 84104" => "2500 W 1700 S, Salt Lake City, UT 84104",
+      "2 Park Ave S, New York, NY 10016" => "2 Park Ave S, New York, NY 10016",
+      "123 Main St NW Ste 5, Seattle, WA 98101" => "123 Main St NW Ste 5, Seattle, WA 98101",
+      "2730 S Veitch St Apt 207, Arlington, VA 22206" => "2730 S Veitch St Apt 207, Arlington, VA 22206"
+    }.each do |input, expected|
+      assert_equal expected, StreetAddress::US.parse(input).to_s
+    end
+  end
+
+  def test_line1_keeps_trailing_directional_suffix
+    assert_equal "4621 E Avenue S", StreetAddress::US.parse("4621 E Avenue S, Palmdale, CA 93552").to_s(:line1)
+    assert_equal "123 Main St NW Ste 5", StreetAddress::US.parse("123 Main St NW Ste 5, Seattle, WA 98101").to_s(:line1)
+    assert_equal "2730 S Veitch St # 207", StreetAddress::US.parse(@addr6).to_s(:line1)
+  end
+
+  def test_to_s_intersection_unchanged
+    assert_equal "Hollywood Blvd and Vine St, Los Angeles, CA", StreetAddress::US.parse(@int2).to_s
+    assert_equal "Main St NE and 5th Ave NW, Minneapolis, MN 55401",
+                 StreetAddress::US.parse("Main St NE and 5th Ave NW, Minneapolis, MN 55401").to_s
+  end
+
 end
